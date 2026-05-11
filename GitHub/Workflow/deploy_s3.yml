@@ -1,0 +1,26 @@
+name: Deploy to AWS S3
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'index-aws.html'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+          
+      - name: Deploy to S3
+        run: |
+          aws s3 cp index-aws.html s3://bandeclodette-devops-site/index.html
+          echo "Deployed to S3!"
